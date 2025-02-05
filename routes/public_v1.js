@@ -23,22 +23,21 @@ public_v1.route("/data/layanan-spesialisasi").get(async (req, res) => {
   }
 });
 
-// public_v1.route('/data/jadwal-dokter-umum')
-//     .get(async (req, res) => {
-//         try {
-//             const response = await table_function.v1.jadwal_dokter_umum.get_all()
+public_v1.route("/data/jadwal-dokter-umum").get(async (req, res) => {
+  try {
+    const response = await table_function.v1.jadwal_dokter_umum.get_all();
 
-//             if(!response.success) {
-//                 return error_handler(res, response)
-//             }
+    if (!response.success) {
+      return error_handler(res, response);
+    }
 
-//             return res.status(200).json({
-//                 data: response.data
-//             })
-//         } catch (error) {
-//             error_handler(res, error)
-//         }
-//     })
+    return res.status(200).json({
+      data: response.data,
+    });
+  } catch (error) {
+    error_handler(res, error);
+  }
+});
 
 public_v1.route("/data/jadwal-dokter-spesialis").get(async (req, res) => {
   try {
