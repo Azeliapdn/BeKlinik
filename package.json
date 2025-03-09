@@ -7,7 +7,7 @@
     "start": "node ./api/index.js",
     "dev": "nodemon ./api/index.js"
   },
-  "author": "Ziyad ZK",
+  "author": "Arthurr",
   "license": "ISC",
   "description": "",
   "dependencies": {
