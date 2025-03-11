@@ -66,10 +66,9 @@ pasien_v1.route('/data/antrean')
     pasien_v1.route('/data/antrean')
     .put(async (req, res) => {
         try {
-            const userdata = req.userdata_pasien; // Mengambil data pasien dari middleware auth
-            const payload = req.body; // Data yang akan diperbarui
+            const userdata = req.userdata_pasien; // Data pasien dari session/auth
+            const payload = req.body; // Data yang dikirim dari frontend
 
-            // Pastikan ada ID pasien dari sesi login atau token
             if (!userdata || !userdata.id) {
                 return res.status(400).json({
                     success: false,
@@ -77,7 +76,6 @@ pasien_v1.route('/data/antrean')
                 })
             }
 
-            // Pastikan ada data yang dikirim untuk diperbarui
             if (!payload || Object.keys(payload).length === 0) {
                 return res.status(400).json({
                     success: false,
@@ -85,21 +83,23 @@ pasien_v1.route('/data/antrean')
                 })
             }
 
-            // Panggil fungsi update berdasarkan ID pasien yang login
+            // Lakukan update data di database
             const response = await table_function.v1.antrean.update(userdata.id, payload);
 
-            if (!response.success) {
+            if (!response.success || response.data.affectedRows === 0) {
                 return res.status(500).json({
                     success: false,
-                    message: "Gagal memperbarui data",
-                    error: response.error
+                    message: "Data tidak berhasil diperbarui. Pastikan data berbeda atau ID benar."
                 })
             }
+
+            // Ambil kembali data yang sudah diperbarui untuk verifikasi
+            const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
 
             return res.status(200).json({
                 success: true,
                 message: "Data berhasil diperbarui",
-                data: response.data
+                data: updatedData.data // Mengembalikan data terbaru
             })
 
         } catch (error) {
@@ -110,6 +110,7 @@ pasien_v1.route('/data/antrean')
             })
         }
     })
+
 
 
     .delete(async (req, res) => {
