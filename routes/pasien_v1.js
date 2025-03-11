@@ -63,27 +63,49 @@ pasien_v1.route('/data/antrean')
     }
 })
 
-    .post(async (req, res) => {
-        try {
-            const payload = req.body
+.post(async (req, res) => {
+    try {
+        const payload = req.body;
 
-            const response = await table_function.v1.antrean.create(payload)
-
-            console.log(response)
-            console.log(payload)
-
-            if(!response.success) {
-                return error_handler(res, response)
-            }
-
-            res.status(200).json({
-                message: 'Berhasil membuat reservasi!',
-                data: response.data
+        // Cek apakah payload kosong
+        if (!payload || Object.keys(payload).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Data tidak boleh kosong."
             })
-        } catch (error) {
-            error_handler(res, error)
         }
-    })
+
+        const response = await table_function.v1.antrean.create(payload);
+
+        console.log("Response dari database:", response);
+        console.log("Payload yang dikirim:", payload);
+
+        // Jika gagal menyimpan data
+        if (!response.success) {
+            return res.status(400).json({
+                success: false,
+                message: "Gagal membuat reservasi.",
+                error: response.error || "Terjadi kesalahan saat menyimpan data."
+            })
+        }
+
+        // Jika berhasil menyimpan data
+        return res.status(201).json({
+            success: true,
+            message: "Berhasil membuat reservasi!",
+            data: response.data
+        })
+
+    } catch (error) {
+        console.error("Error saat membuat reservasi:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Terjadi kesalahan server saat membuat reservasi.",
+            error: error.message
+        })
+    }
+})
+
     .put(async (req, res) => {
         try {
             const userdata = req.userdata_pasien; // Data pasien dari session/auth
