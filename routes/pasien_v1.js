@@ -93,13 +93,15 @@ pasien_v1.route('/data/antrean')
                 })
             }
 
-            // Ambil kembali data yang sudah diperbarui untuk verifikasi
+            // Ambil ulang data yang baru diperbarui, hanya menampilkan ID terkait
             const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
 
             return res.status(200).json({
                 success: true,
                 message: "Data berhasil diperbarui",
-                data: updatedData.data // Mengembalikan data terbaru
+                data: updatedData.data.map(item => ({
+                    id: item.id, // Hanya menampilkan ID terkait
+                }))
             })
 
         } catch (error) {
@@ -110,8 +112,6 @@ pasien_v1.route('/data/antrean')
             })
         }
     })
-
-
 
     .delete(async (req, res) => {
         try {
