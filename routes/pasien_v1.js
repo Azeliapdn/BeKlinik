@@ -130,8 +130,6 @@ pasien_v1.route('/data/antrean')
         })
     }
 })
-
-
     .delete(async (req, res) => {
         try {
             const id = req.body.id || req.query.id
@@ -143,6 +141,8 @@ pasien_v1.route('/data/antrean')
             }
 
             return res.status(200).json({
+                success: true,
+                data: response.data,
                 message: 'Berhasil menghapus data antrean',
                 data: response.data,
             })
