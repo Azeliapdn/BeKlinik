@@ -62,8 +62,6 @@ pasien_v1.route('/data/antrean')
             error_handler(res, error)
         }
     })
-
-    pasien_v1.route('/data/antrean')
     .put(async (req, res) => {
         try {
             const userdata = req.userdata_pasien; // Data pasien dari session/auth
@@ -73,7 +71,7 @@ pasien_v1.route('/data/antrean')
                 return res.status(400).json({
                     success: false,
                     message: "ID pasien tidak ditemukan dalam sesi"
-                });
+                })
             }
 
             if (!payload || Object.keys(payload).length === 0) {
@@ -93,15 +91,13 @@ pasien_v1.route('/data/antrean')
                 })
             }
 
-            // Ambil ulang data yang baru diperbarui, hanya menampilkan ID terkait
+            // Ambil kembali data yang sudah diperbarui untuk verifikasi
             const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
 
             return res.status(200).json({
                 success: true,
                 message: "Data berhasil diperbarui",
-                data: updatedData.data.map(item => ({
-                    id: item.id, // Hanya menampilkan ID terkait
-                }))
+                data: updatedData.data // Mengembalikan data terbaru
             })
 
         } catch (error) {
@@ -112,8 +108,6 @@ pasien_v1.route('/data/antrean')
             })
         }
     })
-
-    
     .delete(async (req, res) => {
         try {
             const id = req.query.id
@@ -129,7 +123,6 @@ pasien_v1.route('/data/antrean')
             error_handler(res, error)
         }
     })
-
 
 pasien_v1.route('/profil')
     .get(async (req, res) => {
