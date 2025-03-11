@@ -107,6 +107,7 @@ pasien_v1.route('/data/antrean')
             })
         }
 
+        // Lakukan update
         const response = await table_function.v1.antrean.update(id, payload);
 
         if (!response.success || response.data.affectedRows === 0) {
@@ -116,10 +117,14 @@ pasien_v1.route('/data/antrean')
             })
         }
 
+        // Ambil data terbaru setelah update
+        const updatedData = await table_function.v1.antrean.get_by_id(id);
+
         return res.status(200).json({
             success: true,
             message: "Berhasil mengubah data antrean",
-            data: response.data
+            before_update: payload, // Data yang dikirim sebelum update
+            after_update: updatedData.data // Data setelah diperbarui
         })
 
     } catch (error) {
@@ -130,7 +135,6 @@ pasien_v1.route('/data/antrean')
         })
     }
 })
-
 
 
     .delete(async (req, res) => {
