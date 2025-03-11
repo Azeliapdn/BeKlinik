@@ -88,16 +88,18 @@ pasien_v1.route('/data/antrean')
 
 .put(async (req, res) => {
     try {
-        const id = req.body.id;
-        const payload = req.body.payload;
+        const payload = req.body.payload || req.body;
+        const id = req.body.id || req.query.id;
 
+        // Validasi ID
         if (!id) {
             return res.status(400).json({
                 success: false,
-                message: "ID tidak boleh kosong"
+                message: "ID antrean tidak boleh kosong"
             })
         }
 
+        // Validasi Payload
         if (!payload || Object.keys(payload).length === 0) {
             return res.status(400).json({
                 success: false,
@@ -110,24 +112,25 @@ pasien_v1.route('/data/antrean')
         if (!response.success || response.data.affectedRows === 0) {
             return res.status(500).json({
                 success: false,
-                message: "Data tidak berhasil diperbarui. Pastikan ID benar dan data berbeda."
+                message: "Data antrean gagal diperbarui. Pastikan ID benar dan ada perubahan data."
             })
         }
 
         return res.status(200).json({
             success: true,
-            message: "Data berhasil diperbarui",
-            data: response.data // Mengembalikan data hasil update
+            message: "Berhasil mengubah data antrean",
+            data: response.data
         })
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Terjadi kesalahan saat memperbarui data",
+            message: "Terjadi kesalahan saat memperbarui antrean",
             error: error.message
         })
     }
 })
+
 
 
     .delete(async (req, res) => {
