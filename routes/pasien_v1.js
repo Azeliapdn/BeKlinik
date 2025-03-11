@@ -73,7 +73,7 @@ pasien_v1.route('/data/antrean')
                 return res.status(400).json({
                     success: false,
                     message: "ID pasien tidak ditemukan dalam sesi"
-                })
+                });
             }
 
             if (!payload || Object.keys(payload).length === 0) {
@@ -113,6 +113,7 @@ pasien_v1.route('/data/antrean')
         }
     })
 
+    
     .delete(async (req, res) => {
         try {
             const id = req.query.id
