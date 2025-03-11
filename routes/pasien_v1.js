@@ -37,6 +37,11 @@ pasien_v1.route('/data/antrean')
             return error_handler(res, response)
         }
 
+        if (id) {
+            // Ambil antrean berdasarkan ID tertentu
+            response = await table_function.v1.antrean.get_by_id(userdata['id'], id);
+        }
+
         return res.status(200).json({
             data: response.data
         })
