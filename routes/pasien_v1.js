@@ -135,30 +135,22 @@ pasien_v1.route('/data/antrean')
     })
     .delete(async (req, res) => {
         try {
-            const id = req.query.id;
-    
-            // Validasi jika id tidak diberikan
-            if (!id) {
-                return res.status(400).json({
-                    message: "ID tidak boleh kosong!",
-                    success: false
-                });
+            const id = req.body.id || req.query.id
+
+            const response = await table_function.v1.antrean.delete(id)
+
+            if(!response.success) {
+                return error_handler(res, response)
             }
-    
-            const response = await table_function.v1.antrean.delete(id);
-    
-            if (!response.success) {
-                return error_handler(res, response);
-            }
-    
+
             return res.status(200).json({
-                message: "Berhasil menghapus data!",
-                success: true
-            });
+                message: 'Berhasil menghapus data antrean',
+                data: response.data,
+            })
         } catch (error) {
-            error_handler(res, error);
+            error_handler(res, error)
         }
-    });
+    })
     
 
 pasien_v1.route('/profil')
