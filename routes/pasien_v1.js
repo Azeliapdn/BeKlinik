@@ -87,72 +87,52 @@ pasien_v1.route('/data/antrean')
 })
 
 
-.put(async (req, res) => {
-    try {
-        const userdata = req.userdata_pasien; // Data pasien dari session/auth
-        const payload = req.body; // Data yang dikirim dari frontend
+    .put(async (req, res) => {
+        try {
+            const userdata = req.userdata_pasien; // Data pasien dari session/auth
+            const payload = req.body; // Data yang dikirim dari frontend
 
-        if (!userdata || !userdata.id) {
-            return res.status(400).json({
-                success: false,
-                message: "ID pasien tidak ditemukan dalam sesi"
-            });
-        }
+            if (!userdata || !userdata.id) {
+                return res.status(400).json({
+                    success: false,
+                    message: "ID pasien tidak ditemukan dalam sesi"
+                })
+            }
 
-        if (!payload || Object.keys(payload).length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Data yang dikirim tidak boleh kosong"
-            });
-        }
+            if (!payload || Object.keys(payload).length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Data yang dikirim tidak boleh kosong"
+                })
+            }
 
-        // Ambil data antrean berdasarkan ID pasien
-        const antrean = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
+            // Lakukan update data di database
+            const response = await table_function.v1.antrean.update(userdata.id, payload);
 
-        if (!antrean.success || antrean.data.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Reservasi tidak ditemukan untuk pasien ini"
+            if (!response.success || response.data.affectedRows === 0) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Data tidak berhasil diperbarui. Pastikan data berbeda atau ID benar."
+                })
+            }
+
+            // Ambil kembali data yang sudah diperbarui untuk verifikasi
+            const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
+
+            return res.status(200).json({
+                success: true,
+                message: "Data berhasil diperbarui",
+                data: updatedData.data // Mengembalikan data terbaru
             })
-        }
 
-        // Cek apakah status masih dalam "proses"
-        const reservasi = antrean.data[0]; // Ambil data pertama
-        if (reservasi.status !== "proses") {
-            return res.status(400).json({
-                success: false,
-                message: "Reservasi tidak dapat dibatalkan karena statusnya bukan 'proses'"
-            })
-        }
-
-        // Update status menjadi "dibatalkan"
-        const updateResponse = await table_function.v1.antrean.update(userdata.id, { status: "dibatalkan" });
-
-        if (!updateResponse.success || updateResponse.data.affectedRows === 0) {
+        } catch (error) {
             return res.status(500).json({
                 success: false,
-                message: "Gagal membatalkan reservasi"
+                message: "Terjadi kesalahan saat memperbarui data",
+                error: error.message
             })
         }
-
-        // Ambil kembali data terbaru setelah pembatalan
-        const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
-
-        return res.status(200).json({
-            success: true,
-            message: "Reservasi berhasil dibatalkan",
-            data: updatedData.data // Mengembalikan data terbaru
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Terjadi kesalahan saat membatalkan reservasi",
-            error: error.message
-        })
-    }
-})
-
+    })
     .delete(async (req, res) => {
         try {
             const id = req.body.id || req.query.id
