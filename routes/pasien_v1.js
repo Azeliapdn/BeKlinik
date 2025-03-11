@@ -91,6 +91,7 @@ pasien_v1.route('/data/antrean')
         const payload = req.body.payload || req.body;
         const id = req.body.id || req.query.id;
 
+        // Validasi ID
         if (!id) {
             return res.status(400).json({
                 success: false,
@@ -98,35 +99,38 @@ pasien_v1.route('/data/antrean')
             })
         }
 
-        // Set status antrean menjadi "dibatalkan"
-        payload.status = "dibatalkan";
+        // Validasi Payload
+        if (!payload || Object.keys(payload).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Data yang dikirim tidak boleh kosong"
+            })
+        }
 
         const response = await table_function.v1.antrean.update(id, payload);
 
         if (!response.success || response.data.affectedRows === 0) {
             return res.status(500).json({
                 success: false,
-                message: "Reservasi gagal dibatalkan. Pastikan ID benar dan ada perubahan data."
+                message: "Data antrean gagal diperbarui. Pastikan ID benar dan ada perubahan data."
             })
         }
 
-        // **Ambil data terbaru setelah pembatalan**
-        const updatedData = await table_function.v1.antrean.get_by_id(id);
-
         return res.status(200).json({
             success: true,
-            message: "Reservasi berhasil dibatalkan",
-            data: updatedData.data // Data terbaru setelah perubahan
+            message: "Berhasil mengubah data antrean",
+            data: response.data
         })
 
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Terjadi kesalahan saat membatalkan reservasi",
+            message: "Terjadi kesalahan saat memperbarui antrean",
             error: error.message
         })
     }
 })
+
 
     .delete(async (req, res) => {
         try {
