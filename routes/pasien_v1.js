@@ -88,20 +88,47 @@ pasien_v1.route('/data/antrean')
 
 .put(async (req, res) => {
     try {
-        const id = req.body.id
-        const payload = req.body.payload
+        const id = req.body.id;
+        const payload = req.body.payload;
 
-        const response = await table_function.v1.antrean.update(id, payload)
-
-        if(!response.success) {
-            return error_handler(res, response)
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "ID tidak boleh kosong"
+            })
         }
 
-        return res.status(200)
+        if (!payload || Object.keys(payload).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Data yang dikirim tidak boleh kosong"
+            })
+        }
+
+        const response = await table_function.v1.antrean.update(id, payload);
+
+        if (!response.success || response.data.affectedRows === 0) {
+            return res.status(500).json({
+                success: false,
+                message: "Data tidak berhasil diperbarui. Pastikan ID benar dan data berbeda."
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Data berhasil diperbarui",
+            data: response.data // Mengembalikan data hasil update
+        })
+
     } catch (error) {
-        error_handler(res, error)
+        return res.status(500).json({
+            success: false,
+            message: "Terjadi kesalahan saat memperbarui data",
+            error: error.message
+        })
     }
 })
+
 
     .delete(async (req, res) => {
         try {
