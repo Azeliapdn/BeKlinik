@@ -63,27 +63,30 @@ pasien_v1.route('/data/antrean')
     }
 })
 
-    .post(async (req, res) => {
-        try {
-            const payload = req.body
+.post(async (req, res) => {
+    try {
+        const payload = req.body;
 
-            const response = await table_function.v1.antrean.create(payload)
+        const response = await table_function.v1.antrean.create(payload);
 
-            console.log(response)
-            console.log(payload)
+        console.log(response);
+        console.log(payload);
 
-            if(!response.success) {
-                return error_handler(res, response)
-            }
-
-            res.status(200).json({
-                message: 'Berhasil membuat reservasi!',
-                data: response.data
-            })
-        } catch (error) {
-            error_handler(res, error)
+        if (!response.success) {
+            return error_handler(res, response);
         }
-    })
+
+        res.status(200).json({
+            message: 'Berhasil membuat reservasi!',
+            success: true, 
+            data: response.data
+        });
+    } catch (error) {
+        error_handler(res, error);
+    }
+})
+
+
     .put(async (req, res) => {
         try {
             const userdata = req.userdata_pasien; // Data pasien dari session/auth
@@ -132,19 +135,23 @@ pasien_v1.route('/data/antrean')
     })
     .delete(async (req, res) => {
         try {
-            const id = req.query.id
-
-            const response = await table_function.v1.antrean.delete(id)
-
-            if(!response.success) {
-                return error_handler(res, response)
+            const id = req.query.id;
+    
+            const response = await table_function.v1.antrean.delete(id);
+    
+            if (!response.success) {
+                return error_handler(res, response);
             }
-
-            return res.status(200)
+    
+            return res.status(200).json({
+                message: 'Berhasil menghapus data!',
+                success: true
+            });
         } catch (error) {
-            error_handler(res, error)
+            error_handler(res, error);
         }
-    })
+    });
+    
 
 pasien_v1.route('/profil')
     .get(async (req, res) => {
