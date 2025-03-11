@@ -28,19 +28,41 @@ pasien_v1.route('/data/layanan-spesialisasi/:id')
     })
 
 pasien_v1.route('/data/antrean')
-    .get(async (req, res) => {
-        const userdata = req.userdata_pasien
+.get(async (req, res) => {
+    try {
+        const userdata = req.userdata_pasien;
 
-        const response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata['id'])
+        if (!userdata || !userdata.id) {
+            return res.status(400).json({
+                success: false,
+                message: "ID pasien tidak ditemukan dalam sesi."
+            })
+        }
 
-        if(!response.success) {
-            return error_handler(res, response)
+        const response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
+
+        if (!response.success || !response.data || response.data.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Data antrean tidak ditemukan untuk pasien ini."
+            })
         }
 
         return res.status(200).json({
+            success: true,
+            message: "Data antrean berhasil ditampilkan.",
             data: response.data
         })
-    })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Terjadi kesalahan saat mengambil data antrean.",
+            error: error.message
+        })
+    }
+})
+
     .post(async (req, res) => {
         try {
             const payload = req.body
