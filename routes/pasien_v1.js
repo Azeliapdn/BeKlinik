@@ -28,25 +28,19 @@ pasien_v1.route('/data/layanan-spesialisasi/:id')
     })
 
 pasien_v1.route('/data/antrean')
-.get(async (req, res) => {
-    const userdata = req.userdata_pasien;
-    const { id } = req.params; // Ambil parameter id dari path
+    .get(async (req, res) => {
+        const userdata = req.userdata_pasien
 
-    let response;
-    if (id) {
-        response = await table_function.v1.antrean.get_by_id(userdata['id'], id);
-    } else {
-        response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata['id']);
-    }
+        const response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata['id'])
 
-    if (!response.success) {
-        return error_handler(res, response);
-    }
+        if(!response.success) {
+            return error_handler(res, response)
+        }
 
-    return res.status(200).json({
-        data: response.data
+        return res.status(200).json({
+            data: response.data
+        })
     })
-})
     .post(async (req, res) => {
         try {
             const payload = req.body
