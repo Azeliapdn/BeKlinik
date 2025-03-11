@@ -37,11 +37,6 @@ pasien_v1.route('/data/antrean')
             return error_handler(res, response)
         }
 
-        if (id) {
-            // Ambil antrean berdasarkan ID tertentu
-            response = await table_function.v1.antrean.get_by_id(userdata['id'], id);
-        }
-
         return res.status(200).json({
             data: response.data
         })
@@ -98,6 +93,28 @@ pasien_v1.route('/data/antrean')
             error_handler(res, error)
         }
     })
+
+    pasien_v1.route('/data/antrean/:id?')
+    .get(async (req, res) => {
+        const userdata = req.userdata_pasien;
+        const { id } = req.params; // Ambil parameter id dari path
+
+        let response;
+        if (id) {
+            response = await table_function.v1.antrean.get_by_id(userdata['id'], id);
+        } else {
+            response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata['id']);
+        }
+
+        if (!response.success) {
+            return error_handler(res, response);
+        }
+
+        return res.status(200).json({
+            data: response.data
+        });
+    });
+
 
 pasien_v1.route('/profil')
     .get(async (req, res) => {
