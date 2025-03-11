@@ -62,22 +62,56 @@ pasien_v1.route('/data/antrean')
             error_handler(res, error)
         }
     })
+
+    pasien_v1.route('/data/antrean')
     .put(async (req, res) => {
         try {
-            const id = req.body.id
-            const payload = req.body.payload
+            const userdata = req.userdata_pasien; // Mengambil data pasien dari middleware auth
+            const payload = req.body; // Data yang akan diperbarui
 
-            const response = await table_function.v1.antrean.update(id, payload)
-
-            if(!response.success) {
-                return error_handler(res, response)
+            // Pastikan ada ID pasien dari sesi login atau token
+            if (!userdata || !userdata.id) {
+                return res.status(400).json({
+                    success: false,
+                    message: "ID pasien tidak ditemukan dalam sesi"
+                })
             }
 
-            return res.status(200)
+            // Pastikan ada data yang dikirim untuk diperbarui
+            if (!payload || Object.keys(payload).length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Data yang dikirim tidak boleh kosong"
+                })
+            }
+
+            // Panggil fungsi update berdasarkan ID pasien yang login
+            const response = await table_function.v1.antrean.update(userdata.id, payload);
+
+            if (!response.success) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Gagal memperbarui data",
+                    error: response.error
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Data berhasil diperbarui",
+                data: response.data
+            })
+
         } catch (error) {
-            error_handler(res, error)
+            return res.status(500).json({
+                success: false,
+                message: "Terjadi kesalahan saat memperbarui data",
+                error: error.message
+            })
         }
     })
+
+
     .delete(async (req, res) => {
         try {
             const id = req.query.id
