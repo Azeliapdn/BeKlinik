@@ -86,53 +86,23 @@ pasien_v1.route('/data/antrean')
     }
 })
 
+.put(async (req, res) => {
+    try {
+        const id = req.body.id
+        const payload = req.body.payload
 
-    .put(async (req, res) => {
-        try {
-            const userdata = req.userdata_pasien; // Data pasien dari session/auth
-            const payload = req.body; // Data yang dikirim dari frontend
+        const response = await table_function.v1.antrean.update(id, payload)
 
-            if (!userdata || !userdata.id) {
-                return res.status(400).json({
-                    success: false,
-                    message: "ID pasien tidak ditemukan dalam sesi"
-                })
-            }
-
-            if (!payload || Object.keys(payload).length === 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Data yang dikirim tidak boleh kosong"
-                })
-            }
-
-            // Lakukan update data di database
-            const response = await table_function.v1.antrean.update(userdata.id, payload);
-
-            if (!response.success || response.data.affectedRows === 0) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Data tidak berhasil diperbarui. Pastikan data berbeda atau ID benar."
-                })
-            }
-
-            // Ambil kembali data yang sudah diperbarui untuk verifikasi
-            const updatedData = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
-
-            return res.status(200).json({
-                success: true,
-                message: "Data berhasil diperbarui",
-                data: updatedData.data // Mengembalikan data terbaru
-            })
-
-        } catch (error) {
-            return res.status(500).json({
-                success: false,
-                message: "Terjadi kesalahan saat memperbarui data",
-                error: error.message
-            })
+        if(!response.success) {
+            return error_handler(res, response)
         }
-    })
+
+        return res.status(200)
+    } catch (error) {
+        error_handler(res, error)
+    }
+})
+
     .delete(async (req, res) => {
         try {
             const id = req.body.id || req.query.id
