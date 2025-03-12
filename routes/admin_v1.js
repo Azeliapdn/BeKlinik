@@ -197,18 +197,17 @@ admin_v1.route('/data/layanan-spesialisasi')
         try {
             upload_image.single('foto_layanan_spesialisasi')(req, res, async (err) => {
                 try {
-                    if (err) {
-                        return error_handler(res, err);
+                    if(err) {
+                        return error_handler(res, err)
                     }
     
-                    if (!req.file) {
-                        return res.status(400).json({
-                            success: false,
-                            message: 'Kamu perlu menambahkan foto pada foto_layanan_spesialis'
+                    if(!req.file) {
+                        return res.status(404).json({
+                            message: 'Kamu perlu menambahkan foto_layanan spesialisasi'
                         })
                     }
     
-                    const { mimetype, buffer } = req.file;
+                    const { mimetype, buffer } = req.file
     
                     const payload = {
                         ...req.body,
@@ -216,36 +215,25 @@ admin_v1.route('/data/layanan-spesialisasi')
                         hari_selesai: req.body['hari_selesai'] === 'null' ? null : req.body['hari_selesai'],
                         foto: buffer,
                         foto_mimetype: mimetype
-                    };
+                    }
     
-                    const response = await table_function.v1.layanan_spesialisasi.create(payload);
+                    const response = await table_function.v1.layanan_spesialisasi.create(payload)
     
-                    if (!response.success) {
-                        return error_handler(res, response);
+                    if(!response.success) {
+                        return error_handler(res, response)
                     }
     
                     return res.status(200).json({
                         success: true,
                         message: 'Berhasil menambahkan data layanan spesialisasi',
-                        data: {
-                            id: response.data.id,
-                            nama: response.data.nama,
-                            aktif: response.data.aktif,
-                            jam_mulai: response.data.jam_mulai,
-                            jam_selesai: response.data.jam_selesai,
-                            hari_mulai: response.data.hari_mulai,
-                            hari_selesai: response.data.hari_selesai,
-                            updatedAt: response.data.updatedAt,
-                            createdAt: response.data.createdAt,
-                            foto_status: 'Foto berhasil diunggah' // Konfirmasi upload foto tanpa mengembalikan datanya
-                        }
+                        data: response.data
                     })
                 } catch (error) {
-                    error_handler(res, error);
+                    error_handler(res, error)
                 }
             })
         } catch (error) {
-            error_handler(res, error);
+            error_handler(res, error)
         }
     })
     
