@@ -165,7 +165,7 @@ admin_v1.route('/data/pasien')
         }
     })
 
-admin_v1.route('/data/layanan-spesialisasi')
+    admin_v1.route('/data/layanan-spesialisasi')
     .get(async (req, res) => {
         try {
 
@@ -184,8 +184,6 @@ admin_v1.route('/data/layanan-spesialisasi')
             }
 
             return res.status(200).json({
-                success: true,
-                message: 'berhasil menampilakan seluruh layanan spesialis',
                 data: response.data,
                 hasNext: response.hasNext
             })
@@ -203,7 +201,7 @@ admin_v1.route('/data/layanan-spesialisasi')
     
                     if(!req.file) {
                         return res.status(404).json({
-                            message: 'Kamu perlu menambahkan foto_layanan spesialisasi'
+                            message: 'You need to upload image to foto_layanan_spesialisasi form'
                         })
                     }
     
@@ -224,7 +222,6 @@ admin_v1.route('/data/layanan-spesialisasi')
                     }
     
                     return res.status(200).json({
-                        success: true,
                         message: 'Berhasil menambahkan data layanan spesialisasi',
                         data: response.data
                     })
@@ -236,7 +233,6 @@ admin_v1.route('/data/layanan-spesialisasi')
             error_handler(res, error)
         }
     })
-    
     .put(async (req, res) => {
         try {
             upload_image.single('foto_layanan_spesialisasi')(req, res, async (err) => {
@@ -274,10 +270,8 @@ admin_v1.route('/data/layanan-spesialisasi')
                     }
 
                     return res.status(200).json({
-                        success: true,
                         message: 'Berhasil mengubah data layanan spesialisasi',
-                        data: response.data,
-                        updated_data: payload
+                        data: response.data
                     })
                 } catch (error) {
                     error_handler(res, error)
@@ -298,14 +292,14 @@ admin_v1.route('/data/layanan-spesialisasi')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data layanan spesialisasi',
-                data: response.data,
+                data: response.data
             })
         } catch (error) {
             error_handler(res, error)
         }
     })
+
 
 admin_v1.route('/foto/layanan-spesialisasi/:id')
     .put( async (req, res) => {
