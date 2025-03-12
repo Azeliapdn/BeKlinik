@@ -253,38 +253,37 @@ admin_v1.route('/data/layanan-spesialisasi')
         try {
             upload_image.single('foto_layanan_spesialisasi')(req, res, async (err) => {
                 try {
-                    if(err) {
-                        return error_handler(res, err)
+                    if (err) {
+                        return error_handler(res, err);
                     }
-
-                    let payload = req.body.payload || req.body
-                    let id = req.body.id || req.query.id
-
-
-                    if(req.file) {
+    
+                    let payload = req.body.payload || req.body;
+                    let id = req.body.id || req.query.id;
+    
+                    if (req.file) {
                         payload = {
                             ...payload,
                             jam_selesai: payload['jam_selesai'] === 'null' ? null : payload['jam_selesai'],
                             hari_selesai: payload['hari_selesai'] === 'null' ? null : payload['hari_selesai'],
                             foto: req.file.buffer,
                             foto_mimetype: req.file.mimetype,
-                            aktif: payload['aktif'] === 'true' ? true : false
+                            aktif: payload['aktif'] == true // Perbaikan di sini
                         }
-                    }else{
+                    } else {
                         payload = {
                             ...payload,
                             jam_selesai: payload['jam_selesai'] === 'null' ? null : payload['jam_selesai'],
                             hari_selesai: payload['hari_selesai'] === 'null' ? null : payload['hari_selesai'],
-                            aktif: payload['aktif'] === 'true' ? true : false
+                            aktif: payload['aktif'] == true // Perbaikan di sini
                         }
                     }
-
-                    const response = await table_function.v1.layanan_spesialisasi.update(id, payload)
-
-                    if(!response.success) {
-                        return error_handler(res, response)
+    
+                    const response = await table_function.v1.layanan_spesialisasi.update(id, payload);
+    
+                    if (!response.success) {
+                        return error_handler(res, response);
                     }
-
+    
                     return res.status(200).json({
                         success: true,
                         message: 'Berhasil mengubah data layanan spesialisasi',
@@ -292,13 +291,14 @@ admin_v1.route('/data/layanan-spesialisasi')
                         updated_data: payload
                     })
                 } catch (error) {
-                    error_handler(res, error)
+                    error_handler(res, error);
                 }
             })
         } catch (error) {
-            error_handler(res, error)
+            error_handler(res, error);
         }
     })
+    
     .delete(async (req, res) => {
         try {
             const id = await req.body.id
@@ -312,7 +312,8 @@ admin_v1.route('/data/layanan-spesialisasi')
             return res.status(200).json({
                 success: true,
                 message: 'Berhasil menghapus data layanan spesialisasi',
-                data: response.data
+                data: response.data,
+                updated_data: payload
             })
         } catch (error) {
             error_handler(res, error)
