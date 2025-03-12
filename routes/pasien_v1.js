@@ -144,7 +144,6 @@ pasien_v1.route('/data/antrean')
                 success: true,
                 data: response.data,
                 message: 'Berhasil menghapus data antrean',
-                data: response.data,
             })
         } catch (error) {
             error_handler(res, error)
