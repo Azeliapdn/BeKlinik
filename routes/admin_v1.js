@@ -210,13 +210,33 @@ admin_v1.route('/data/layanan-spesialisasi')
     
                     const { mimetype, buffer } = req.file;
     
+                    // 🛠️ Pemrosesan input waktu dan hari
+                    let jam_mulai = null;
+                    let jam_selesai = null;
+                    let hari_mulai = null;
+                    let hari_selesai = null;
+    
+                    if (req.body.waktu) {
+                        const waktuSplit = req.body.waktu.split(" - "); // Pisah waktu "15:00 - 23:00"
+                        jam_mulai = waktuSplit[0] || null;
+                        jam_selesai = waktuSplit[1] || null;
+                    }
+    
+                    if (req.body.hari) {
+                        const hariSplit = req.body.hari.split(" - "); // Jika formatnya perlu dipisah
+                        hari_mulai = hariSplit[0] || req.body.hari;
+                        hari_selesai = hariSplit[1] || null;
+                    }
+    
                     const payload = {
                         ...req.body,
-                        jam_selesai: req.body['jam_selesai'] === 'null' ? null : req.body['jam_selesai'],
-                        hari_selesai: req.body['hari_selesai'] === 'null' ? null : req.body['hari_selesai'],
+                        jam_mulai,
+                        jam_selesai,
+                        hari_mulai,
+                        hari_selesai,
                         foto: buffer,
                         foto_mimetype: mimetype
-                    };
+                    }
     
                     const response = await table_function.v1.layanan_spesialisasi.create(payload);
     
@@ -237,7 +257,7 @@ admin_v1.route('/data/layanan-spesialisasi')
                             hari_selesai: response.data.hari_selesai,
                             updatedAt: response.data.updatedAt,
                             createdAt: response.data.createdAt,
-                            foto_status: 'Foto berhasil diunggah' // Konfirmasi upload foto tanpa mengembalikan datanya
+                            foto_status: "Foto berhasil diunggah"
                         }
                     })
                 } catch (error) {
@@ -248,6 +268,7 @@ admin_v1.route('/data/layanan-spesialisasi')
             error_handler(res, error);
         }
     })
+    
     
     .put(async (req, res) => {
         try {
