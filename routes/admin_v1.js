@@ -184,7 +184,6 @@ admin_v1.route('/data/layanan-spesialisasi')
             }
 
             return res.status(200).json({
-                success: true,
                 data: response.data,
                 hasNext: response.hasNext
             })
@@ -202,8 +201,7 @@ admin_v1.route('/data/layanan-spesialisasi')
     
                     if(!req.file) {
                         return res.status(404).json({
-                            success: false,
-                            message: 'Kamu perlu menambahkan foto_layanan_spesialisasi di from'
+                            message: 'You need to upload image to foto_layanan_spesialisasi form'
                         })
                     }
     
@@ -224,7 +222,6 @@ admin_v1.route('/data/layanan-spesialisasi')
                     }
     
                     return res.status(200).json({
-                        success: true,
                         message: 'Berhasil menambahkan data layanan spesialisasi',
                         data: response.data
                     })
@@ -273,7 +270,6 @@ admin_v1.route('/data/layanan-spesialisasi')
                     }
 
                     return res.status(200).json({
-                        success: true,
                         message: 'Berhasil mengubah data layanan spesialisasi',
                         data: response.data
                     })
@@ -296,7 +292,6 @@ admin_v1.route('/data/layanan-spesialisasi')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data layanan spesialisasi',
                 data: response.data
             })
@@ -374,7 +369,6 @@ admin_v1.route('/data/dokter')
             }
 
             return res.status(200).json({
-                success: true,
                 data: response.data,
                 hasNext: response.hasNext
             })
@@ -398,7 +392,6 @@ admin_v1.route('/data/dokter')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menambahkan data dokter',
                 data: response.data
             })
@@ -423,7 +416,6 @@ admin_v1.route('/data/dokter')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil mengubah data dokter',
                 data: response.data
             })
@@ -442,7 +434,6 @@ admin_v1.route('/data/dokter')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data dokter',
                 data: response.data
             })
@@ -493,7 +484,6 @@ admin_v1.route('/data/dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menambahkan data dokter umum',
                 data: response.data
             })
@@ -518,7 +508,6 @@ admin_v1.route('/data/dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil mengubah data dokter_umum',
                 data: response.data
             })
@@ -537,7 +526,6 @@ admin_v1.route('/data/dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data dokter_umum',
                 data: response.data
             })
@@ -582,7 +570,6 @@ admin_v1.route('/data/jadwal-dokter-spesialis')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menambahkan data jadwal dokter spesialis',
                 data: response.data
             })
@@ -602,7 +589,6 @@ admin_v1.route('/data/jadwal-dokter-spesialis')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil mengubah data jadwal dokter spesialis',
                 data: response.data
             })
@@ -621,7 +607,6 @@ admin_v1.route('/data/jadwal-dokter-spesialis')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data jadwal dokter spesialis',
                 data: response.data
             })
@@ -666,7 +651,6 @@ admin_v1.route('/data/jadwal-dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menambahkan jadwal dokter umum',
                 data: response.data
             })
@@ -686,7 +670,6 @@ admin_v1.route('/data/jadwal-dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil mengubah jadwal dokter umum',
                 data: response.data
             })
@@ -705,7 +688,6 @@ admin_v1.route('/data/jadwal-dokter-umum')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus jadwal dokter umum',
                 data: response.data
             })
@@ -770,7 +752,6 @@ admin_v1.route('/data/antrean')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil mengubah data antrean',
                 data: response.data,
             })
@@ -789,7 +770,6 @@ admin_v1.route('/data/antrean')
             }
 
             return res.status(200).json({
-                success: true,
                 message: 'Berhasil menghapus data antrean',
                 data: response.data,
             })
