@@ -752,6 +752,7 @@ admin_v1.route('/data/antrean')
             }
 
             return res.status(200).json({
+                success: true,
                 message: 'Berhasil mengubah data antrean',
                 data: response.data,
             })
@@ -770,6 +771,7 @@ admin_v1.route('/data/antrean')
             }
 
             return res.status(200).json({
+                success: true,
                 message: 'Berhasil menghapus data antrean',
                 data: response.data,
             })
