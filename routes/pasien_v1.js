@@ -28,111 +28,59 @@ pasien_v1.route('/data/layanan-spesialisasi/:id')
     })
 
 pasien_v1.route('/data/antrean')
-.get(async (req, res) => {
-    try {
-        const userdata = req.userdata_pasien;
+    .get(async (req, res) => {
+        const userdata = req.userdata_pasien
 
-        if (!userdata || !userdata.id) {
-            return res.status(400).json({
-                success: false,
-                message: "ID pasien tidak ditemukan dalam sesi."
-            })
-        }
+        const response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata['id'])
 
-        const response = await table_function.v1.antrean.get_by_fk_dt_pasien(userdata.id);
-
-        if (!response.success || !response.data || response.data.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Data antrean tidak ditemukan untuk pasien ini."
-            })
+        if(!response.success) {
+            return error_handler(res, response)
         }
 
         return res.status(200).json({
-            success: true,
-            message: "Data antrean berhasil ditampilkan.",
             data: response.data
         })
+    })
+    .post(async (req, res) => {
+        try {
+            const payload = req.body
 
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Terjadi kesalahan saat mengambil data antrean.",
-            error: error.message
-        })
-    }
-})
+            const response = await table_function.v1.antrean.create(payload)
 
-.post(async (req, res) => {
-    try {
-        const payload = req.body;
+            console.log(response)
+            console.log(payload)
 
-        const response = await table_function.v1.antrean.create(payload);
+            if(!response.success) {
+                return error_handler(res, response)
+            }
 
-        console.log(response);
-        console.log(payload);
-
-        if (!response.success) {
-            return error_handler(res, response);
-        }
-
-        res.status(200).json({
-            message: 'Berhasil membuat reservasi!',
-            success: true, 
-            data: response.data
-        });
-    } catch (error) {
-        error_handler(res, error);
-    }
-})
-
-.put(async (req, res) => {
-    try {
-        const payload = req.body.payload || req.body;
-        const id = req.body.id || req.query.id;
-
-        // Validasi ID
-        if (!id) {
-            return res.status(400).json({
-                success: false,
-                message: "ID antrean tidak boleh kosong"
+            res.status(200).json({
+                message: 'Berhasil membuat reservasi!',
+                data: response.data
             })
+        } catch (error) {
+            error_handler(res, error)
         }
+    })
+    .put(async (req, res) => {
+        try {
+            const id = req.body.id
+            const payload = req.body.payload
 
-        // Validasi Payload
-        if (!payload || Object.keys(payload).length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Data yang dikirim tidak boleh kosong"
-            })
+            const response = await table_function.v1.antrean.update(id, payload)
+
+            if(!response.success) {
+                return error_handler(res, response)
+            }
+
+            return res.status(200)
+        } catch (error) {
+            error_handler(res, error)
         }
-
-        const response = await table_function.v1.antrean.update(id, payload);
-
-        if (!response.success || response.data.affectedRows === 0) {
-            return res.status(500).json({
-                success: false,
-                message: "Data antrean gagal diperbarui. Pastikan ID benar dan ada perubahan data."
-            })
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Berhasil mengubah data antrean",
-            data: response.data
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Terjadi kesalahan saat memperbarui antrean",
-            error: error.message
-        })
-    }
-})
+    })
     .delete(async (req, res) => {
         try {
-            const id = req.body.id || req.query.id
+            const id = req.query.id
 
             const response = await table_function.v1.antrean.delete(id)
 
@@ -140,16 +88,11 @@ pasien_v1.route('/data/antrean')
                 return error_handler(res, response)
             }
 
-            return res.status(200).json({
-                success: true,
-                data: response.data,
-                message: 'Berhasil menghapus data antrean',
-            })
+            return res.status(200)
         } catch (error) {
             error_handler(res, error)
         }
     })
-    
 
 pasien_v1.route('/profil')
     .get(async (req, res) => {
