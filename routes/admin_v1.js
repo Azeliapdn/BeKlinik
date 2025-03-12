@@ -184,6 +184,8 @@ admin_v1.route('/data/layanan-spesialisasi')
             }
 
             return res.status(200).json({
+                success: true,
+                message: 'berhasil menampilakan seluruh layanan spesialis',
                 data: response.data,
                 hasNext: response.hasNext
             })
