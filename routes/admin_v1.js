@@ -288,7 +288,8 @@ admin_v1.route('/data/layanan-spesialisasi')
                     return res.status(200).json({
                         success: true,
                         message: 'Berhasil mengubah data layanan spesialisasi',
-                        data: response.data
+                        data: response.data,
+                        updated_data: payload
                     })
                 } catch (error) {
                     error_handler(res, error)
